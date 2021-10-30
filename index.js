@@ -92,10 +92,48 @@ async function run() {
                 bookings
             })
         });
+        //GET BOOKING FOR UPDATE
+        app.get('/bookinglist/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const user = await bookingCollection.findOne(query);
+            res.send(user);
+        });
         //ADD NEW BOOKING
         app.post('/bookinglist', async (req, res) => {
             const bookingData = req.body;
             const result = await bookingCollection.insertOne(bookingData);
+            res.json(result);
+        });
+        //UPDATE BOOKING
+        app.put('/bookinglist/:id', async (req, res) => {
+            const id = req.params.id;
+            const update = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    name: update.name,
+                    email: update.email,
+                    phone: update.phone,
+                    people: update.people,
+                    date: update.date,
+                    travelingfrom: update.travelingfrom,
+                    travelingto: update.travelingto,
+                    vaccine: update.vaccine,
+                    bookhotel: update.bookhotel,
+                    sightseeing: update.sightseeing,
+                    returnticket: update.returnticket
+                }
+            };
+            const result = await bookingCollection.updateOne(filter, updateDoc, options)
+            res.json(result);
+        })
+        //DELTE BOOKING
+        app.delete('/bookinglist/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookingCollection.deleteOne(query);
             res.json(result);
         });
 
