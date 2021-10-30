@@ -43,12 +43,20 @@ async function run() {
                 destinatons
             })
         });
+        //GET SPECIFIC DESTINATION
+        app.get('/destinationlist/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await destinationCollection.findOne(query);
+            res.send(result);
+        });
         //ADD NEW DESTINATION
         app.post('/destinationlist', async (req, res) => {
             const destinationData = req.body;
             const result = await destinationCollection.insertOne(destinationData);
             res.json(result);
         });
+
         //WORK FOR PACKAGE
         //GET ALL PACKAGES
         app.get('/packagelist', async (req, res) => {
@@ -67,6 +75,14 @@ async function run() {
                 packages
             })
         });
+        //GET SPECIFIC PACKAGE
+        app.get('/packagelist/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const user = await packageCollection.findOne(query);
+            res.send(user);
+        });
+
         //ADD NEW PACKAGE
         app.post('/packagelist', async (req, res) => {
             const packageData = req.body;
@@ -123,7 +139,8 @@ async function run() {
                     vaccine: update.vaccine,
                     bookhotel: update.bookhotel,
                     sightseeing: update.sightseeing,
-                    returnticket: update.returnticket
+                    returnticket: update.returnticket,
+                    packName: update.packName
                 }
             };
             const result = await bookingCollection.updateOne(filter, updateDoc, options)
