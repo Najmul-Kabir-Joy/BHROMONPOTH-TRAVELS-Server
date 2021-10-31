@@ -25,6 +25,73 @@ async function run() {
         const destinationCollection = database.collection('destinations');
         const packageCollection = database.collection('packages');
         const bookingCollection = database.collection('bookings');
+        const imageCollection = database.collection('galary');
+        const mentorsCollection = database.collection('mentors');
+        //WORK FOR MENTORS
+        //ALL MENTORS
+        app.get('/mentors', async (req, res) => {
+            const cursor = mentorsCollection.find({});
+            const mentors = await cursor.toArray();
+            res.send(mentors);
+        });
+        //APPROVED MENTORS
+        app.get('/activementors', async (req, res) => {
+            const id = 'ACTIVE';
+            const query = { status: id };
+            const result = await mentorsCollection.find(query).toArray();
+            res.send(result);
+        });
+        //ADD MENTORS
+        app.post('/mentors', async (req, res) => {
+            const metorData = req.body;
+            const result = await mentorsCollection.insertOne(metorData);
+            res.json(result);
+        });
+        //DELETE MENTOR
+        app.delete('/mentors/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await mentorsCollection.deleteOne(query);
+            res.json(result);
+        });
+        //UPDATE MENTOR STATUS
+        app.put('/mentors/:id', async (req, res) => {
+            const id = req.params.id;
+            const update = req.body;
+            console.log(update);
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: update.status
+                }
+            };
+            const result = await mentorsCollection.updateOne(filter, updateDoc, options)
+            res.json(result);
+
+
+        })
+        //WORK FOR GALARY
+        //GET ALL PHOTOS
+        app.get('/allphotos', async (req, res) => {
+            const cursor = imageCollection.find({});
+            const photos = await cursor.toArray();
+            res.send(photos);
+        });
+        //ADD NEW PHOTO
+        app.post('/allphotos', async (req, res) => {
+            const photoData = req.body;
+            const result = await imageCollection.insertOne(photoData);
+            res.json(result);
+        });
+        //DELETE A PHOTO
+        //DELTE BOOKING
+        app.delete('/allphotos/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await imageCollection.deleteOne(query);
+            res.json(result);
+        });
         //WORK FOR DESTINATION
         //GET ALL DESTINATIONS
         app.get('/destinationlist', async (req, res) => {
@@ -112,8 +179,15 @@ async function run() {
         app.get('/bookinglist/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const user = await bookingCollection.findOne(query);
-            res.send(user);
+            const result = await bookingCollection.findOne(query);
+            res.send(result);
+        });
+        //GET USER BOOKINGS
+        app.get('/mybookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { uid: id };
+            const result = await bookingCollection.find(query).toArray();
+            res.send(result);
         });
         //ADD NEW BOOKING
         app.post('/bookinglist', async (req, res) => {
