@@ -92,7 +92,9 @@ async function run() {
             const result = await imageCollection.deleteOne(query);
             res.json(result);
         });
-        //WORK FOR DESTINATION
+        /*------------------------------------------------------
+                        WORK FOR DESTINATION
+        --------------------------------------------------------*/
         //GET ALL DESTINATIONS
         app.get('/destinationlist', async (req, res) => {
             const cursor = destinationCollection.find({});
@@ -123,8 +125,17 @@ async function run() {
             const result = await destinationCollection.insertOne(destinationData);
             res.json(result);
         });
+        //DELETE DESTINATION
+        app.delete('/destinationlist/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await destinationCollection.deleteOne(query);
+            res.json(result);
+        })
 
-        //WORK FOR PACKAGE
+        /*--------------------------------------------------------
+                            WORK FOR PACKAGE
+        ----------------------------------------------------------*/
         //GET ALL PACKAGES
         app.get('/packagelist', async (req, res) => {
             const cursor = packageCollection.find({});
@@ -157,7 +168,16 @@ async function run() {
             res.json(result);
         });
 
-        //WORK FOR USER BOOKINGS
+        app.delete('/packagelist/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await packageCollection.deleteOne(query);
+            res.json(result);
+        })
+
+        /*---------------------------------------------
+                    WORK FOR USER BOOKINGS
+        -----------------------------------------------*/
         //GET ALL BOOKINGS
         app.get('/bookinglist', async (req, res) => {
             const cursor = bookingCollection.find({});
